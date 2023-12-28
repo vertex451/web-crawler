@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"crawler/internal/crawler-service"
 	"flag"
 	"fmt"
 	"log"
 	"time"
+
+	"crawler/internal/crawler-service"
 )
 
 const CrawlingTimeoutSeconds = 300
