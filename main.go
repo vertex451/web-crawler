@@ -1,18 +1,33 @@
 package main
 
 import (
-	"errors"
+	"context"
+	"crawler/internal/crawler-service"
 	"flag"
 	"fmt"
 	"log"
+	"time"
 )
+
+const CrawlingTimeoutSeconds = 300
 
 // CrawlWebpage craws the given rootURL looking for <a href=""> tags
 // that are targeting the current web page, either via an absolute url like http://mysite.com/mypath or by a relative url like /mypath
 // and returns a sorted list of absolute urls  (eg: []string{"http://mysite.com/1","http://mysite.com/2"})
-func CrawlWebpage(rootURL string, maxDepth int) ([]string, error) {
-	//TODO: Implement Solution
-	return nil, errors.New("solution not implemented")
+func CrawlWebpage(rootURL string, maxDepth int) ([]string, error) { //nolint: unparam
+	cw := crawler.NewWebCrawler() // this must be in the main or dep-container function
+
+	ctx, cancel := context.WithTimeout(context.Background(), CrawlingTimeoutSeconds*time.Second)
+	defer cancel()
+
+	links, err := cw.Crawl(ctx, rootURL, maxDepth)
+	if err != nil {
+		fmt.Println("failed to crawl all data", err)
+	}
+
+	// nil is returned for purpose, errors during crawling are expected,
+	// this is not that critical and no need to stop execution in the main func
+	return links, nil
 }
 
 // --- DO NOT MODIFY BELOW ---
